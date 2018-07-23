@@ -13,21 +13,33 @@
             if(isset($argv[1])) {	
                 if(strtolower($argv[1]) == 'multiply') {
                     if(isset($argv[2])) {
-                       $flag=strpos($argv[2], '\n');
-                       $flag1=strpos($argv[2], '//');
-                        if(!empty($flag)){
-                            $arrdata=str_replace('\n',',',$argv[2]);
-                            $arr = explode(',',$arrdata);
+                        $s=0;$arr=array();
+                        $arrdata=$argv[2];
+                        $flag=strpos($arrdata, '\n');
+                        if($flag !== false){
+                            $s++;
+                            $arrd=str_replace('\n',',',$arrdata);
+                            $arr = explode(',',$arrd);
                         } 
-                        if(!empty($flag1)){
-                            $del=substr($argv[2],2,1);
-                            $data=substr($argv[2],5,strlen($argv[2])-5);
+                        $flag1=preg_match('/[\\\]/',$arrdata);
+                        if($flag1){
+                            $s++;
+                            $del=substr($arrdata,2,1);
+                            $data=substr($arrdata,5,strlen($arrdata)-5);
                             $arr = explode($del,$data);
-                        } else {
-                            $arr = explode(',',$argv[2]);
-                            $arr=$this::removeLargeno($arr);
+                        } 
+                        if($s==0){
+                            $arr = explode(',',$arrdata);
                         }
-                        $sum = $this->calculateSum($arr);
+                        $flag=$this->checkNegative($arr);
+                        if(!$flag){
+                            $negarr=$this->checkNegativearray($arr);
+                            $negdata = implode(',',$negarr);
+                            echo "Error: Negative numbers(".$negdata.") not allowed";
+                            exit;
+                        }
+                        $arr=$this::removeLargeno($arr);
+                        $sum = $this->calculatemultiply($arr);
                         echo $sum;
                         
                     } else {
@@ -46,9 +58,9 @@
          * @param array $arr
          * @return int
          */
-        function calculateSum($arr){
+        function calculatemultiply($arr){
             if(count($arr) > 0) {
-                return array_sum($arr);
+                return array_product($arr);
             }
             return 0;
         }
@@ -82,6 +94,21 @@
                 }
             }
             return true;
+        }
+        
+        /**
+         * check Negative value
+         * @param Array $arr
+         * @return boolean
+         */
+        function checkNegativearray($arr){
+            $negarr=array();
+            foreach ($arr as $val){
+                if($val < 0){
+                    $negarr[]=$val;
+                }
+            }
+            return $negarr;
         }
 		
 		/**
