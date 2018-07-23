@@ -21,7 +21,7 @@
                             $arrd=str_replace('\n',',',$arrdata);
                             $arr = explode(',',$arrd);
                         } 
-                        $flag1=preg_match('/[\\\]/',$arrdata);
+                        $flag1=preg_match('/[\\/]/',$arrdata);
                         if($flag1){
                             $s++;
                             $del=substr($arrdata,2,1);
